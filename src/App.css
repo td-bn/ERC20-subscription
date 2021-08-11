@@ -1,0 +1,50 @@
+.App, .container {
+    height: 100%;
+}
+
+.header {
+    background-color: gray;
+    height: 4em;
+}
+
+.card-row {
+    margin-top: 15%;
+    margin-bottom: 10%;
+    height: 80%;
+}
+.main {
+    height: 90%;
+}
+
+.main-card {
+    height: 100%;
+}
+
+.tab-cont {
+    height: 78%;
+}
+
+.table {
+    height: 100%;
+}
+
+.table-wrapper {
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.scroll {
+    height: 100%;
+    display: block;
+    overflow-y: auto;
+}
+
+#subscribe {
+    height: 100%;
+}
+
+.card-padded {
+    margin: 10px;
+    padding: 10px;
+}
