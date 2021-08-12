@@ -37,6 +37,7 @@ function Plans({provider, contract, signer}) {
     <div className="table-wrapper">
       <table className="highlight">
         <thead>
+          <th>Plan Id</th>
           <th>Merchant </th>
           <th>Frequency(days) </th>
           <th>Cost(tokens) </th>
@@ -46,6 +47,7 @@ function Plans({provider, contract, signer}) {
         <tbody className="">
           {plans.map( plan => {
             return (<Plan 
+              key={plan.id}
               provider={provider}
               contract={contract}
               signer={signer}

@@ -1,6 +1,8 @@
 import React from 'react'
 import CreatePlan from './CreatePlan'
 import Plans from './Plans'
+import Cancel from './Cancel'
+import Due from './Due'
 
 window.addEventListener("DOMContentLoaded", event => {
   const options = {
@@ -37,9 +39,11 @@ function Card({contract, provider, signer}) {
             <Plans provider={provider} contract={contract} signer={signer} />
           </div>
           <div id="cancel">
-            Test 3
+            <Cancel provider={provider} contract={contract} signer={signer} />
           </div>
-          <div id="pay">Test 4</div>
+          <div id="pay">
+            <Due provider={provider} contract={contract} signer={signer} />
+          </div>
         </div>
       </div>
     </div>

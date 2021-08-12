@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import {useState, useEffect} from 'react';
-import Subscription from './Subscription'
+import Payment from './Payment'
+import formatTime from "../utils/DateTimeUtils"
 
-function Cancel({contract, provider, signer}) {
+function Due({contract, provider, signer}) {
   const [subscriptions, setSubscriptions] = useState([]);
   const [numPlans, setNumPlans] = useState(0)
 
@@ -25,6 +26,7 @@ function Cancel({contract, provider, signer}) {
         subscription = await contract.subscriptions(address, i)
 
         if (subscription.user === ethers.constants.AddressZero) continue
+        if (subscription.nextPaymentTime > Date.now()/1000) continue
 
         plan = await contract.plans(i)
         ar.push({
@@ -33,6 +35,8 @@ function Cancel({contract, provider, signer}) {
           next: subscription.nextPaymentTime.toString(),
           cost: plan.cost.toString(), 
           merchant: plan.merchant, 
+          subscriber: address,
+          token: plan.token,
         }); 
       }
 
@@ -47,14 +51,13 @@ function Cancel({contract, provider, signer}) {
         <thead>
           <th>Plan Id</th>
           <th>Merchant </th>
-          <th>Start Time</th>
-          <th>Next Payment Due </th>
+          <th>Payment Due Since</th>
           <th>Cost</th>
           <th></th>
         </thead>
         <tbody className="">
           {subscriptions.map( sub => {
-            return (<Subscription key={sub.planId} 
+            return (<Payment key={sub.planId} 
               provider={provider}
               contract={contract}
               signer={signer}
@@ -63,6 +66,8 @@ function Cancel({contract, provider, signer}) {
               from={sub.from}
               next={sub.next}
               cost={sub.cost}
+              subscriber={sub.subscriber}
+              token={sub.token}
             />)
           })}          
         </tbody>
@@ -70,4 +75,4 @@ function Cancel({contract, provider, signer}) {
     </div>
   )
 }
-export default Cancel
+export default Due

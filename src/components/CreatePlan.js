@@ -29,7 +29,7 @@ function CreatePlan({signer, contract}) {
 
     
     setLoading(true)
-    const transaction = await contract.connect(signer).createPlan(tokenAddress, freq, cost)
+    const transaction = await contract.connect(signer).createPlan(tokenAddress, freq * 60 * 60 * 24, cost)
     await transaction.wait();
     setLoading(false)
     setTokenAddress('0x0')
@@ -37,6 +37,7 @@ function CreatePlan({signer, contract}) {
     setCost('')
 
     window.alert("Plan created!");
+    window.location.reload() 
   }
 
   return (
