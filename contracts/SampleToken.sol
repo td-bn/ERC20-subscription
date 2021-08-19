@@ -3,5 +3,8 @@ pragma solidity ^0.8.6;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
-abstract contract SampleToken is ERC20 {
+contract SampleToken is ERC20 {
+    constructor() ERC20('MockToken', 'TKN') {
+        _mint(msg.sender, 1000);
+    }
 }

@@ -8,9 +8,17 @@
 }
 
 .card-row {
-    margin-top: 15%;
+    margin-top: 5%;
     margin-bottom: 10%;
     height: 80%;
+}
+
+.collection {
+    margin-top: 2%;
+}
+
+.item {
+    margin-left: 3%;
 }
 .main {
     height: 90%;

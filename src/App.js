@@ -26,8 +26,25 @@ function App() {
     <div className="App">
       <div className="container">
         {/* <div className="row header">
-
         </div> */}
+        <ul class="collection">
+          <li className="item"><h5>
+            This is a crypto subscription dApp
+          </h5></li>
+          <li className="item"><h6>
+            Subscription are abundant in the world e.g in Netflix, Spotify and a variety of other services
+          </h6></li>
+          <li className="item"><h6>
+            This dApp allows users to create plans that others can subscribe to, accepting any ERC20 tokens as 
+            a medium of payment
+          </h6></li>
+          <li className="item"><h6>
+            Users can subscribe to plans using the ERC20 token specified in the plan and cancel the plan anytime they want
+          </h6></li>
+          <li className="item"><h6>
+            Overdue payments can be triggered by anyone
+          </h6></li>
+        </ul>
         <div className="card-row row">
           <Card provider={provider} signer={signer} contract={contract}/>
         </div>
