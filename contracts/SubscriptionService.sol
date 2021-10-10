@@ -3,6 +3,8 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+
 // SubscriptionService deployed to: 0xF3388099C0d9C3C1aA0392CBECa8EB18eAbC25Ca Rinkeby
 
 /**
@@ -11,25 +13,28 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  *      Lets users susbcribe to those plans
  * @author td-bn
  */
-contract SubscriptionService {
+contract SubscriptionService is KeeperCompatibleInterface{
     
     uint public planIndex;
+
     struct Plan {
         address token;
         address merchant;
         uint256 frequency;
         uint256 cost;
     }
+
     mapping(uint256 => Plan) public plans;
     
-
     struct Subscription {
         address user;
         uint256 startTime;
         uint256 nextPaymentTime;
     }
+
     mapping(address => mapping(uint256 => Subscription)) public subscriptions;
 
+    mapping(uint256 => address[]) planSubscribers;
 
     event Transfer(address user, uint256 planId);
     event NewSubscriber(address user, uint256 planId, uint256 time);
@@ -72,6 +77,8 @@ contract SubscriptionService {
             block.timestamp,
             block.timestamp + plan.frequency
         );
+
+        planSubscribers[_planId].push(msg.sender);
         
         emit NewSubscriber(msg.sender, _planId, block.timestamp);
     }
@@ -90,11 +97,11 @@ contract SubscriptionService {
     }
     
     /**
-     * @dev the merchant the cost of one frequency of the plan
+     * @dev pay the merchant the cost of one frequency of the plan
      * @param _subscriber: the susbcriber of the plan in this case
      * @param _planId: the plan the subscriber has to pay for
      */
-    function pay(address _subscriber, uint256 _planId) external {
+    function pay(address _subscriber, uint256 _planId) public {
         Subscription storage subscription = subscriptions[_subscriber][_planId];
         require(subscription.user != address(0), "can't process payment for invalid subscription");
         require(block.timestamp > subscription.nextPaymentTime, "payment not due yet");
@@ -106,5 +113,40 @@ contract SubscriptionService {
         
         emit Transfer(_subscriber, _planId);
         subscription.nextPaymentTime = subscription.nextPaymentTime + plan.frequency;
+    }
+
+    function checkUpkeep(bytes calldata checkData) external view override returns (bool upkeepNeeded, bytes memory) {
+        uint256 planId = abi.decode(checkData, (uint256));
+        address[] storage subs = planSubscribers[planId];
+        
+        uint256 count;    
+        for(uint i=0; i<subs.length; i++) {
+            if (subscriptions[subs[i]][planId].nextPaymentTime < block.timestamp) {
+                count++;
+            }
+        }
+    
+        uint setCount = 0;
+        address[] memory due = new address[](count);
+        for(uint i=0; i<subs.length; i++) {
+            if (subscriptions[subs[i]][planId].nextPaymentTime < block.timestamp) {
+                due[setCount] = subs[i];
+                setCount++;
+            }
+        }
+
+        if (count > 0)
+            return (true,abi.encode(planId, due));
+        return (false, bytes(""));
+    }
+
+    function performUpkeep(bytes calldata performData) external override {
+        uint planId;
+        address[] memory addresses;
+        
+        (planId, addresses) = abi.decode(performData, (uint, address[]));
+        for (uint i=0; i<addresses.length; i++) {
+            pay(addresses[0], planId);
+        }
     }
 }

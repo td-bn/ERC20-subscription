@@ -109,4 +109,31 @@ describe("Subscription Service", () => {
                 .to.be.revertedWith("payment not due yet");
         })
     })
+
+    describe('Externally triggered payments', () => {
+        it('should find due payments', async () => {
+            await createSubscription();
+            await time.increase(MONTH + 1);
+            const abiCoder = ethers.utils.defaultAbiCoder;
+            const ZERO = abiCoder.encode(["uint256"], [0]);
+
+            const ret = await service.checkUpkeep(ZERO);
+            expect(ret[0]).to.equal(true);
+        })
+
+        it('should trigger due payment if found', async () => {
+            await createSubscription();
+            await time.increase(MONTH + 1);
+            const abiCoder = ethers.utils.defaultAbiCoder;
+            const ZERO = abiCoder.encode(["uint256"], [0]);
+
+            // Get Upkeep work
+            const ret = await service.checkUpkeep(ZERO);
+
+            // Perform Upkeep with fetched data
+            await expect(service.connect(others[0]).performUpkeep(ret[1]))
+                .to.emit(service, "Transfer")
+                .withArgs(subscriber.address, 0);
+        })
+    })
 })
