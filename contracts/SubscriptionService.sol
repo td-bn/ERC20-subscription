@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 
-// SubscriptionService deployed to: 0xF3388099C0d9C3C1aA0392CBECa8EB18eAbC25Ca Rinkeby
+// SubscriptionService deployed to: 0xf3388099c0d9c000000000000000000000000000 Rinkeby
 
 /**
  * @dev A simple subscription service contract
@@ -149,4 +149,7 @@ contract SubscriptionService is KeeperCompatibleInterface{
             pay(addresses[0], planId);
         }
     }
+
+    fallback() payable external{}
+    receive() payable external{}
 }

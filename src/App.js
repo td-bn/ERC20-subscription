@@ -4,7 +4,7 @@ import './App.css';
 
 import * as SubscriptionService from './artifacts/contracts/SubscriptionService.sol/SubscriptionService.json';
 
-const contractAddress = "0xF3388099C0d9C3C1aA0392CBECa8EB18eAbC25Ca";
+const contractAddress = "0x2Ab5e3DF75aec168F0cc18cbB63Aa2847aeb6497";
 const abi = SubscriptionService.abi;
 
 function connectWeb3() {

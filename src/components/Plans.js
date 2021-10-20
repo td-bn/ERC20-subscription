@@ -7,7 +7,15 @@ function Plans({provider, contract, signer}) {
 
   useEffect(() => {
     const getNumPlans = async () => {
-      const n = await contract.planIndex()
+      let n
+      try {
+        console.log('---interface---:', contract.interface)
+        n = await contract.planIndex()
+        console.log(typeof n)
+        console.log('n:', n)
+      } catch (error) {
+        console.error("--- Error: ---", error)  
+      }
       setNumPlans(n)
       console.log(`${n} plans`)
     }

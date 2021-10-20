@@ -20,9 +20,14 @@ module.exports = {
   },
   networks: {
     hardhat: {
+      chainId: 1337
     },
     rinkeby: {
-      url: process.env["API_KEY"],
+      url: process.env["API_KEY_RINKEBY"],
+      accounts: [process.env["PRIVATE_KEY"]] 
+    },
+    kovan: {
+      url: process.env["API_KEY_KOVAN"],
       accounts: [process.env["PRIVATE_KEY"]] 
     }
   },
